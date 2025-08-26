@@ -1,0 +1,84 @@
+\section{Historical Evolution of Images as Vectors}
+
+The practice of representing images as vectors is not the result of a single invention, but rather the outcome of a gradual evolution across multiple fields—including digital image processing, pattern recognition, and machine learning. This transformation allowed visual data to be processed using tools from linear algebra, statistics, and optimization.
+
+\subsection{Early Image Digitization (1950s--1970s)}
+
+The earliest use of digital images arose from radar, satellite, and fax systems, where images were stored as 2D arrays of intensity values. However, as computational methods developed, researchers recognized that by flattening these 2D arrays into 1D vectors, they could apply signal-processing techniques, such as correlation and Fourier analysis.
+
+\textbf{Key contributors:} Early NASA and military researchers, and pioneers like Rafael C. Gonzalez and Richard E. Woods, who helped formalize the foundations of digital image processing.
+
+\subsection{Pattern Recognition and Statistical Methods (1970s--1990s)}
+
+As the field of pattern recognition matured, images began to be treated explicitly as points in high-dimensional vector spaces. Each image was flattened into a vector (e.g., a $28 \times 28$ grayscale image became a vector in $\mathbb{R}^{784}$) and used as input for various classifiers such as nearest neighbor, support vector machines (SVMs), and principal component analysis (PCA).
+
+This representation enabled researchers to compare and classify images using geometric notions like distance and linear projection.
+
+\textbf{Key applications:} Handwritten digit recognition (e.g., USPS, MNIST), face recognition via eigenfaces, and early statistical learning.
+
+\subsection{Deep Learning Era (2000s--Present)}
+
+With the rise of deep learning, especially convolutional neural networks (CNNs), images began to be processed as multi-dimensional tensors. However, at various stages—particularly when connecting convolutional features to fully connected layers—image representations are still flattened into vectors. Furthermore, deep models often embed images into lower-dimensional vector spaces for tasks such as classification, retrieval, and clustering.
+
+\textbf{Key contributors:} Yann LeCun (CNNs), Geoffrey Hinton (deep architectures, autoencoders), and David Marr (computational theory of vision).
+
+\subsection{Summary Timeline}
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|p{3cm}|p{5.5cm}|p{4.5cm}|}
+		\hline
+		\textbf{Era} & \textbf{Key Concept} & \textbf{Figures / Systems} \\
+		\hline
+		1950s--1970s & Images as digitized 2D arrays; processed numerically & Early radar and satellite systems; Gonzalez \& Woods \\
+		\hline
+		1970s--1990s & Flattened image vectors for classification and recognition & Pattern recognition systems; Eigenfaces; USPS, MNIST \\
+		\hline
+		1990s--2000s & Statistical and geometric treatment of image vectors & PCA, SVMs, clustering algorithms \\
+		\hline
+		2000s--Present & Deep learning pipelines: from tensors to vector embeddings & LeCun, Hinton, modern CNNs, feature embeddings \\
+		\hline
+	\end{tabular}
+	\caption{Timeline of the conceptual development of images as vectors}
+\end{table}
+
+\section{From Images to Vectors: Justifying Linear Operations in Image Processing}
+
+Once an image is represented as a vector—by flattening its 2D (or 3D for color) pixel grid into a one-dimensional array—it becomes a point in a high-dimensional real vector space. For instance, a grayscale image of size $28 \times 28$ becomes a vector in $\mathbb{R}^{784}$. This abstraction is not merely a matter of storage or format—it is a fundamental conceptual shift. 
+
+\subsection{Why Vector Representation is Meaningful}
+
+Images are composed of structured intensity values arranged in a grid. When flattened, each pixel becomes a coordinate in a high-dimensional space. Thus, an image becomes a vector in a space where:
+\begin{itemize}
+	\item Each axis represents the intensity of one pixel.
+	\item Each image is a point in this pixel-defined space.
+	\item Similar images cluster near one another in the vector space.
+\end{itemize}
+
+This representation enables the application of linear algebraic methods that treat the image as a mathematical object amenable to computation, comparison, and transformation.
+
+\subsection{Why Vector Operations Make Sense for Images}
+
+Vectors, by definition, are designed to support two core operations: \textbf{vector addition} and \textbf{scalar multiplication}. These operations are not arbitrary—they are meaningful because of the linear structure assumed by the space. In the context of image vectors:
+
+\begin{itemize}
+	\item \textbf{Vector addition} combines two images by adding corresponding pixel values. This can represent interpolation between images, averaging, or motion blending.
+	\item \textbf{Scalar multiplication} scales the brightness or contrast of an image uniformly by amplifying or reducing every pixel intensity.
+\end{itemize}
+
+These operations preserve the overall spatial structure of the image and operate component-wise, which is consistent with the pixel-wise nature of digital images. The result of such operations is still a valid image vector in the same space. Thus, the space is \emph{closed} under these operations, satisfying the essential properties of a vector space.
+
+\subsection{Why Linear Algebra is Applicable to Image Processing}
+
+Because the image domain behaves linearly under vector representation, it becomes meaningful to apply linear tools such as:
+\begin{itemize}
+	\item Matrix transformations (e.g., rotations, projections, or filters)
+	\item Dot products (for measuring similarity)
+	\item Principal Component Analysis (PCA) and other dimensionality reduction techniques
+\end{itemize}
+
+These tools rely fundamentally on vector addition and scalar multiplication. The structure of vector space ensures that image transformations remain consistent, interpretable, and computationally tractable. This justifies why many foundational operations in computer vision—such as convolution, contrast adjustment, denoising, and even image blending—are built on linear principles.
+
+\subsection{Conclusion}
+
+The flattening of an image into a vector is not merely a preprocessing step; it is a gateway to a well-defined linear world. In this world, operations like addition and scaling are not only mathematically valid but also semantically meaningful. This deep compatibility between the structure of image data and the operations allowed in vector spaces provides the theoretical basis for much of modern image processing.

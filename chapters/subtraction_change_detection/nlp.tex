@@ -1,0 +1,34 @@
+\section{Subtraction in Natural Language Processing}
+Subtraction has also emerged as a critical mechanism in Natural Language Processing (NLP), particularly in the context of word and sentence embeddings. Vector representations of words in models such as Word2Vec, GloVe, and BERT encode not only meaning but also relationships. For example, the well-known analogy:
+\[
+\text{king} - \text{man} + \text{woman} \approx \text{queen}
+\]
+relies on vector subtraction to isolate the concept of "royalty" and transfer it across gender. Here, subtraction is used to identify and preserve a relation while transforming other aspects of meaning.
+
+Moreover, in tasks such as paraphrase detection, sentence similarity, or entailment, subtraction between sentence embeddings $f(A) - f(B)$ is used to measure dissimilarity. A small resulting vector indicates high semantic overlap, while a larger vector suggests differing meanings. This approach follows the same logical principle: remove what is shared and analyze what remains.
+
+\subsection*{Where Does Semantic Meaning Come From?}
+Semantic refers to \emph{meaning}—how concepts relate to one another. For example, the words \texttt{cat} and \texttt{dog} are semantically similar because they refer to animals of the same category. In contrast, \texttt{cat} and \texttt{car} are semantically unrelated despite some phonetic similarity.
+
+An \emph{embedding} is a numeric vector that represents a word or sentence in a high-dimensional space. For instance:
+\begin{itemize}
+	\item \texttt{cat} $\rightarrow$ $[0.5, -1.2, 0.3, \dots]$
+	\item \texttt{dog} $\rightarrow$ $[0.52, -1.15, 0.29, \dots]$
+\end{itemize}
+These vectors are close in space because the model has learned they are used in similar contexts.
+
+Now consider the vectors for \texttt{king} and \texttt{man}. Subtraction gives:
+\[
+\texttt{king} - \texttt{man} = [0.5, 0.5, 0.3, \dots]
+\]
+This vector represents what makes a king different from a man—concepts like royalty or status.
+
+When we add this difference to \texttt{woman}:
+\[
+\texttt{king} - \texttt{man} + \texttt{woman} \approx \texttt{queen}
+\]
+The model captures that "queen" is to "woman" what "king" is to "man." This kind of analogy only works because subtraction isolates semantic relationships.
+
+Importantly, these relationships are learned by exposing the model to large corpora of language. If a model frequently sees "king rules kingdom" and "queen rules kingdom," it learns that both \texttt{king} and \texttt{queen} are related to rulership. It places them in a vector space where this pattern can be mathematically retrieved through subtraction.
+
+In summary, subtraction in NLP works because embeddings store relational meaning. The vector $A - B$ captures "how $A$ differs from $B$ semantically," and when applied in analogy or similarity tasks, it provides a mechanism for detecting or transforming meaning.

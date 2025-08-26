@@ -1,0 +1,243 @@
+In mathematics, especially in geometry, algebra, and topology, invariants are properties that remain unchanged under certain transformations. For example, the distance between two points is invariant under translation and rotation.
+
+In machine learning, the idea is similar. We aim to find a representation of the input (e.g., text, image) that does not change when we apply transformations that are irrelevant to the task (these are called nuisance transformations), but does change when the input's meaning or function does.
+
+\paragraph{Example 1: Sentiment Analysis}
+
+In sentiment analysis, the goal is to determine whether a sentence expresses a positive or negative sentiment. In many cases, what primarily drives the sentiment is the presence of emotionally charged words—such as ``love'', ``hate'', or ``terrible''—rather than the specific syntactic arrangement of those words. For instance, consider the two sentences: ``I absolutely love this movie!'' and ``This movie I absolutely love!'' Both clearly convey a positive sentiment, even though the word order is different. This suggests that for sentiment classification, the order of words may often be less important than the presence of polarity-related terms.
+
+When the task is insensitive to word order, a natural modeling choice is the Bag-of-Words (BoW) representation. BoW treats text as an unordered collection of words, mapping a sequence of tokens to a feature vector that ignores positional information. In this representation, permutations of the input words yield the same feature vector, which makes it invariant under word reordering. This invariance is particularly advantageous when word order is considered a nuisance variable—one that introduces irrelevant variation for the task at hand.
+
+\begin{tcolorbox}[colback=gray!10, colframe=black, title=Takeaway]
+	The Bag-of-Words model discards word order, which is a nuisance in this context, while preserving the presence of sentiment-bearing words, which are crucial for the classification task.
+\end{tcolorbox}
+
+\section{Named Entity Recognition (NER)}
+
+In named entity recognition (NER), the goal is to identify and classify specific entities in a sentence—such as person names, geographic locations, or organizations. Unlike sentiment analysis, this task depends heavily on the syntactic structure and position of words. Capitalization patterns, prefixes, and above all, the order of tokens carry semantic weight. For example, consider the sentence: ``John lives in Paris.'' A good model must recognize ``John'' and ``Paris'' as named entities. However, if the word order is changed to ``Paris lives in John,'' the sentence takes on an entirely different meaning and the entity roles are inverted. This clearly shows that word order is not a nuisance here; rather, it is integral to the task.
+
+In such cases, models must be sensitive to the sequential arrangement of words—that is, their representations should be \textit{variant} under permutations. Approaches like Bag-of-Words (BoW), which discard ordering information, are fundamentally unsuitable for NER. Instead, architectures that maintain positional dependencies, such as Recurrent Neural Networks (RNNs), Transformers, or Conditional Random Fields (CRFs), are required to model the contextual relationships necessary for accurate entity detection.
+
+\begin{tcolorbox}[colback=gray!10, colframe=black, title=Takeaway]
+	For NER, word order is essential. Representations must preserve sequence information, as invariance to ordering would destroy the task’s semantic integrity.
+\end{tcolorbox}
+
+\section*{Invariant Representation in Sentiment Classification}
+
+Let us consider the importance of invariance in feature design through a simple example in sentiment analysis. Suppose we are given two sentences:
+
+\begin{align*}
+	S_1 &= \text{``I love this movie''} \\
+	S_2 &= \text{``This movie I love''}
+\end{align*}
+
+To analyze how different representations treat these sentences, we define two types of embedding functions:
+\begin{itemize}
+	\item $\phi_{\text{BoW}}$: a bag-of-words embedding function that discards word order.
+	\item $\phi_{\text{Seq}}$: a position-sensitive (sequential) embedding function that preserves word order.
+\end{itemize}
+
+\subsection*{Step 1: Define the Vocabulary and Embedding Space}
+
+Assume the vocabulary is defined as:
+\[
+V = \{\text{``I''}, \text{``love''}, \text{``this''}, \text{``movie''}\}
+\]
+Each word is mapped to an index:
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		\textbf{Word} & \textbf{Index} \\
+		\hline
+		I & 1 \\
+		love & 2 \\
+		this & 3 \\
+		movie & 4 \\
+		\hline
+	\end{tabular}
+\end{center}
+
+\subsection*{Step 2: Define Representations}
+
+\paragraph{(a) Bag-of-Words (BoW) Embedding.}
+The BoW representation counts word frequency, ignoring word position. The function $\phi_{\text{BoW}}: \text{sentence} \rightarrow \mathbb{R}^{|V|}$ maps each sentence to a vector of word counts. Thus, for both $S_1$ and $S_2$:
+\[
+\phi_{\text{BoW}}(S_1) = \phi_{\text{BoW}}(S_2) =
+\begin{bmatrix}
+	1 \\ 1 \\ 1 \\ 1
+\end{bmatrix}
+\]
+Each component of the vector corresponds to the frequency of words ``I'', ``love'', ``this'', and ``movie'', respectively.
+
+\begin{tcolorbox}[colback=gray!10, colframe=black, title=Conclusion]
+	\[
+	\phi_{\text{BoW}}(S_1) = \phi_{\text{BoW}}(S_2) \quad \Rightarrow \quad \text{BoW is invariant under word permutation.}
+	\]
+\end{tcolorbox}
+
+\paragraph{(b) Position-Sensitive (Sequential) Embedding.}
+In contrast, sequential embeddings preserve the order of words. We define $\phi_{\text{Seq}}(S) = [w_1, w_2, w_3, w_4]$, where each $w_i \in \mathbb{R}^4$ is a one-hot vector indicating the word at position $i$. Then:
+\[
+\phi_{\text{Seq}}(S_1) =
+\begin{bmatrix}
+	1 & 0 & 0 & 0 \\  % "I"
+	0 & 1 & 0 & 0 \\  % "love"
+	0 & 0 & 1 & 0 \\  % "this"
+	0 & 0 & 0 & 1     % "movie"
+\end{bmatrix}
+\qquad
+\phi_{\text{Seq}}(S_2) =
+\begin{bmatrix}
+	0 & 0 & 1 & 0 \\  % "this"
+	0 & 0 & 0 & 1 \\  % "movie"
+	1 & 0 & 0 & 0 \\  % "I"
+	0 & 1 & 0 & 0     % "love"
+\end{bmatrix}
+\]
+
+\begin{tcolorbox}[colback=gray!10, colframe=black, title=Conclusion]
+	\[
+	\phi_{\text{Seq}}(S_1) \ne \phi_{\text{Seq}}(S_2) \quad \Rightarrow \quad \text{The sequential representation is variant under word permutation.}
+	\]
+\end{tcolorbox}
+
+\subsection*{Step 3: Task Suitability Comparison}
+
+We summarize the comparison as follows:
+
+\begin{center}
+	\begin{tabular}{|l|c|c|c|}
+		\hline
+		\textbf{Model} & \textbf{Order Sensitive?} & \textbf{Suitable for Sentiment?} & \textbf{Suitable for Syntax?} \\
+		\hline
+		Bag-of-Words (BoW) & No & Yes (often) & No \\
+		Sequential (RNN/Transformer/CRF) & Yes & Yes & Yes \\
+		\hline
+	\end{tabular}
+\end{center}
+
+Bag-of-words models are well-suited for sentiment classification, especially when the presence of emotionally polarized words—such as \textit{love}, \textit{hate}, or \textit{excellent}—is more important than their order. In contrast, syntax-sensitive tasks like translation, question answering, or named entity recognition require models that respect the sequence and structure of input text.
+
+\subsection*{Bonus: Invariance Under Transformation}
+
+Let $T$ be a transformation that permutes the words of $S_1$ to produce $S_2$, i.e.,
+\[
+T(S_1) = \text{``This movie I love''} = S_2
+\]
+
+Then:
+\[
+\phi_{\text{BoW}}(T(S_1)) = \phi_{\text{BoW}}(S_1), \qquad
+\phi_{\text{Seq}}(T(S_1)) \ne \phi_{\text{Seq}}(S_1)
+\]
+
+\begin{tcolorbox}[colback=gray!10, colframe=black, title=Key Insight]
+	BoW is invariant under permutation transformations, whereas sequential embeddings are not. This illustrates the core mathematical idea behind invariant versus variant representations in NLP feature design.
+\end{tcolorbox}
+Here is the LaTeX code for the **mathematical comparison between a linear model and a deep sequence model under negation**, now updated to **exclude RNNs** and include **philosophical reasoning** on why linear classifiers inherently fail to capture interactions like negation:
+
+```latex
+\section*{Linear Models and the Limits of Invariance under Negation}
+
+To understand how different models handle semantic transformations such as negation, let us compare how a linear classifier behaves under a change in sentiment. We consider the following two sentences:
+
+\begin{align*}
+	S_1 &= \text{``I love this movie''} \\
+	S_2 &= \text{``I do not love this movie''}
+\end{align*}
+
+We focus on a binary sentiment classification task and assume the model outputs a real-valued score using the sigmoid function:
+\[
+\text{sentiment}(x) = \sigma(w^\top x + b), \quad \text{where } \sigma(z) = \frac{1}{1 + e^{-z}}
+\]
+
+\subsection*{Setup: Linear Classification with Bag-of-Words}
+
+We represent each sentence using a bag-of-words (BoW) vector. Let the vocabulary and index mapping be:
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		\textbf{Word} & \textbf{Index} & \textbf{BoW Component} \\
+		\hline
+		I     & 0 & $x_0$ \\
+		love  & 1 & $x_1$ \\
+		this  & 2 & $x_2$ \\
+		movie & 3 & $x_3$ \\
+		do    & 4 & $x_4$ \\
+		not   & 5 & $x_5$ \\
+		\hline
+	\end{tabular}
+\end{center}
+
+Assume the following learned weights:
+
+\[
+w =
+\begin{bmatrix}
+	0.2 \\ 1.5 \\ 0.1 \\ 0.1 \\ 0.0 \\ -1.0
+\end{bmatrix}, \quad b = -0.2
+\]
+
+The word ``love'' contributes positively, ``not'' contributes negatively, and other terms are weakly weighted or neutral.
+
+\subsection*{Prediction for Sentence 1}
+
+For $S_1 = \text{``I love this movie''}$, the BoW vector is:
+
+\[
+x^{(1)} = \begin{bmatrix}1 \\ 1 \\ 1 \\ 1 \\ 0 \\ 0\end{bmatrix}
+\]
+
+The score becomes:
+
+\[
+z^{(1)} = w^\top x^{(1)} + b = (0.2 + 1.5 + 0.1 + 0.1) - 0.2 = 1.7
+\]
+\[
+\sigma(z^{(1)}) \approx 0.845 \quad \text{(positive sentiment)}
+\]
+
+\subsection*{Prediction for Sentence 2}
+
+For $S_2 = \text{``I do not love this movie''}$, the BoW vector is:
+
+\[
+x^{(2)} = \begin{bmatrix}1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1\end{bmatrix}
+\]
+
+The score becomes:
+
+\[
+z^{(2)} = (0.2 + 1.5 + 0.1 + 0.1 + 0.0 - 1.0) - 0.2 = 0.7
+\]
+\[
+\sigma(z^{(2)}) \approx 0.668 \quad \text{(still positive)}
+\]
+
+\begin{tcolorbox}[colback=gray!10, colframe=black, title=Observation]
+	Even though ``not'' appears in the input, the sentiment is not reversed. The model only slightly reduces the score, failing to flip the polarity.
+\end{tcolorbox}
+
+\subsection*{Philosophical Reflection: Why Linear Models Fail}
+
+At the heart of the failure lies a fundamental property of linear models: they treat each input feature as contributing \emph{independently} to the output. The functional form:
+\[
+z = \sum_{i=1}^{d} w_i x_i + b
+\]
+is a \textit{weighted sum} of individual word effects. Each term $w_i x_i$ is computed in isolation, without awareness of neighboring words or syntactic context.
+
+From a philosophical perspective, this structure mirrors a worldview in which meaning is purely compositional in the most naive sense: each word has an intrinsic value, and the overall meaning is simply the arithmetic sum of these parts. However, language is not composed of atomistic contributions alone. Words interact. Negation is not a standalone token with fixed polarity—it inverts the polarity of the word it modifies. In ``not love'', the sentiment of ``love'' is fundamentally transformed, not merely diminished.
+
+Linear classifiers cannot express such interactions because they lack the expressive capacity to encode \textit{nonlinear relationships} or \textit{compositional operations} between features. In mathematical terms, the function class defined by linear models is closed under additive combinations of features, but not under feature conjunctions or negations of conjunctions. Therefore, interactions like:
+\[
+\text{``not'' immediately before ``love''} \Rightarrow \text{negative sentiment}
+\]
+are not representable within this architecture.
+
+\begin{tcolorbox}[colback=gray!10, colframe=black, title=Key Insight]
+	Linear models impose an independence assumption on input features. They cannot capture interactions like ``not + love'' because their decision boundary is a flat hyperplane that lacks structural awareness. Language, in contrast, is rich with context-sensitive dependencies.
+\end{tcolorbox}
+```
+

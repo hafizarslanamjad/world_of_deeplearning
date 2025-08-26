@@ -1,0 +1,425 @@
+\section{Python Data Types and Cheat Sheet}
+
+This section summarizes essential Python and PyTorch data structures and functions, with an emphasis on their abstract categories (e.g., \textit{mapping}, \textit{sequence}, \textit{iterable}). Understanding these abstractions is critical for reasoning about how different operations behave, what inputs they expect, and what types they return.
+
+\subsection*{1. Fundamental Data Structures and Concepts}
+
+\begin{description}
+	\item[\textbf{list}] An \textbf{ordered}, \textbf{mutable} sequence of elements, indexed by position. Supports operations like indexing, slicing, and mutation.
+	\begin{lstlisting}[language=Python]
+		words = ["hello", "world"]
+		words[0]  # "hello"
+		words.append("!")
+	\end{lstlisting}
+	
+	\item[\textbf{dict}] A \textbf{mapping} from unique keys to values. Provides fast lookup and update using \texttt{key} syntax.
+	\begin{lstlisting}[language=Python]
+		word2idx = {"cat": 0, "dog": 1}
+		word2idx["cat"]  # 0
+	\end{lstlisting}
+	
+	\item[\textbf{Mapping}] An abstract interface for any object that supports key-value access. Includes \texttt{dict}, \texttt{Counter}, etc. Formally: $f : K \rightarrow V$.
+	
+	\item[\textbf{Iterable}] Any object usable in a \texttt{for} loop or comprehension. Includes lists, strings, sets, dicts, and ranges.
+	
+	\item[\textbf{Sequence}] A special kind of iterable that is \textbf{ordered} and \textbf{indexable}. Includes \texttt{list}, \texttt{tuple}, \texttt{str}, \texttt{range}.
+	
+	\item[\textbf{Counter}] A \texttt{dict}-like object from \texttt{collections} that counts element frequency in an iterable.
+	\begin{lstlisting}[language=Python]
+		from collections import Counter
+		Counter(["apple", "apple", "banana"])  # {'apple': 2, 'banana': 1}
+	\end{lstlisting}
+	
+	\item[\textbf{torch.Tensor}] A multi-dimensional numeric array (vector, matrix, etc.) used in PyTorch. Efficiently supports math and GPU acceleration.
+	\begin{lstlisting}[language=Python]
+		import torch
+		x = torch.tensor([1.0, 2.0, 3.0])
+		x.size()  # torch.Size([3])
+	\end{lstlisting}
+\end{description}
+
+\subsection*{2. Python \& PyTorch Cheat Sheet (with Types)}
+
+\begin{table}[h!]
+	\centering
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{|>{\ttfamily}l|l|l|l|}
+		\hline
+		\textbf{Function} & \textbf{Purpose} & \textbf{Input Type} & \textbf{Output Type} \\
+		\hline
+		text.lower() & Lowercase conversion & str & str \\
+		text.replace() & Replace substring & str, str, str & str \\
+		re.sub() & Regex substitution & str, str, str & str \\
+		text.split() & Split string by space & str & List[str] \\
+		\hline
+		Counter(iterable) & Frequency counter & Iterable[Any] & Counter (dict-like) \\
+		counter.update() & Add counts & Iterable[Any] & None \\
+		counter.items() & Key-value pairs & Counter & Iterable[Tuple[Any, int]] \\
+		\hline
+		Dict[key] & Direct key lookup & Mapping, key & value \\
+		Dict.get(k, d) & Key lookup with default & Mapping, key, default & value \\
+		len(Dict) & Size of mapping & Mapping & int \\
+		\hline
+		{[}f(x) for x in it] & List comprehension & Iterable & List \\
+		\{k: v for ...\} & Dict comprehension & Iterable & Dict \\
+		\hline
+		lst.append(x) & Append item & List, item & None (mutates) \\
+		lst + [x] & Create new list & List & List \\
+		lst.extend(it) & Add multiple items & List, Iterable & None (mutates) \\
+		\hline
+		torch.tensor(data) & Create tensor & Sequence, array & Tensor \\
+		tensor.size() & Shape of tensor & Tensor & torch.Size \\
+		\hline
+	\end{tabular}
+	\caption{Python and PyTorch function cheat sheet with input and output types}
+\end{table}
+
+\subsection*{3. Conceptual Categories Summary}
+
+\begin{table}[h!]
+	\centering
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{|l|l|l|}
+		\hline
+		\textbf{Class or Type} & \textbf{Category} & \textbf{Core Properties} \\
+		\hline
+		\texttt{list} & Sequence & Ordered, mutable, indexed \\
+		\texttt{dict} & Mapping & Key-value pairs, fast lookup \\
+		\texttt{Counter} & Mapping subclass & Frequency count, iterable keys \\
+		\texttt{Iterable} & Abstract type & For loops, comprehensions \\
+		\texttt{Sequence} & Indexed iterable & Supports slicing/indexing \\
+		\texttt{Mapping} & Abstract type & Provides key $\rightarrow$ value access \\
+		\texttt{torch.Tensor} & Numeric container & Multi-dimensional, mathematical \\
+		\hline
+	\end{tabular}
+	\caption{Summary of common Python object categories}
+\end{table}
+
+\section{Typical Function Categories in Python Programming}
+
+Understanding functions in terms of their high-level behavior rather than only their syntax is essential for reasoning, abstraction, and clean program design. This section outlines typical categories of functions and operations used in Python, particularly in the context of data processing, machine learning, and model pipelines.
+
+\subsection*{1. Transformation Functions}
+
+These functions take an input (often a sequence, string, or tensor) and return a modified version — usually with the same type but altered content.
+
+\begin{itemize}
+	\item \textbf{Purpose:} To convert, modify, or reformat data.
+	\item \textbf{Does not mutate} the original input (usually).
+\end{itemize}
+
+\textbf{Examples:}
+
+\begin{itemize}
+	\item \texttt{text.lower()} – Converts text to lowercase (\texttt{str} $\rightarrow$ \texttt{str})
+	\item \texttt{sorted(lst)} – Returns a sorted copy of a list
+	\item \texttt{re.sub(...)} – Returns a string with regex-based substitutions
+	\item \texttt{torch.tensor([...])} – Converts list to tensor
+\end{itemize}
+
+\subsection*{2. Aggregation Functions}
+
+These reduce a collection (list, iterable, or tensor) to a single value or statistic.
+
+\begin{itemize}
+	\item \textbf{Purpose:} Summarize or compress data into scalar form.
+	\item \textbf{Typically returns:} \texttt{int}, \texttt{float}, or small tuple.
+\end{itemize}
+
+\textbf{Examples:}
+
+\begin{itemize}
+	\item \texttt{len(lst)} – Number of elements
+	\item \texttt{sum(numbers)} – Sum of a list or iterable
+	\item \texttt{max(values)} – Maximum value
+	\item \texttt{tensor.mean()} – Mean of tensor values
+\end{itemize}
+
+\subsection*{3. Mutation Functions}
+
+These directly change (mutate) the object they operate on. They are typically used with mutable data structures like lists or dictionaries.
+
+\begin{itemize}
+	\item \textbf{Purpose:} Change the input object in place.
+	\item \textbf{Typically returns:} \texttt{None}, but changes the object.
+\end{itemize}
+
+\textbf{Examples:}
+
+\begin{itemize}
+	\item \texttt{lst.append(x)} – Adds element to list
+	\item \texttt{lst.extend(other)} – Concatenates another list
+	\item \texttt{dict.update(...)} – Adds or updates keys
+	\item \texttt{counter.update(tokens)} – Increments internal counts
+\end{itemize}
+
+\subsection*{4. Accessor Functions}
+
+These retrieve information from a data structure without modifying it. They may expose structure, shape, or metadata.
+
+\begin{itemize}
+	\item \textbf{Purpose:} Inspect or extract properties from data.
+\end{itemize}
+
+\textbf{Examples:}
+
+\begin{itemize}
+	\item \texttt{dict[key]} – Access value by key
+	\item \texttt{word2idx.get(key, default)} – Safe key lookup
+	\item \texttt{tensor.size()} – Returns shape of a tensor
+	\item \texttt{counter.items()} – Returns key-count pairs
+\end{itemize}
+
+\subsection*{5. Generator Expressions and Comprehensions}
+
+These build new data structures (lists, dicts, sets) from iterables using inline expressions.
+
+\begin{itemize}
+	\item \textbf{Purpose:} Compactly construct a transformed collection.
+	\item \textbf{Type returned:} \texttt{list}, \texttt{dict}, \texttt{set}, or generator.
+\end{itemize}
+
+\textbf{Examples:}
+
+\begin{itemize}
+	\item \texttt{[x**2 for x in nums]} – Square all elements
+	\item \texttt{\{k: v for k, v in zip(K, V)\}} – Build dict from key-value pairs
+	\item \texttt{(x for x in lst)} – Lazy generator expression
+\end{itemize}
+
+\subsection*{6. Conversion or Casting Functions}
+
+These convert objects from one type to another.
+
+\begin{itemize}
+	\item \textbf{Purpose:} Enforce type expectations or adapt structure.
+\end{itemize}
+
+\textbf{Examples:}
+
+\begin{itemize}
+	\item \texttt{list(...)} – Convert iterable to list
+	\item \texttt{dict(...)} – Convert key-value iterable to dict
+	\item \texttt{torch.tensor(...)} – Convert list/array to tensor
+	\item \texttt{str(number)} – Convert number to string
+\end{itemize}
+
+\subsection*{Summary Table: Function Categories}
+
+\begin{table}[h!]
+	\centering
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{|l|l|l|}
+		\hline
+		\textbf{Category} & \textbf{Purpose} & \textbf{Typical Output Type} \\
+		\hline
+		Transformation & Modify or reshape input & Same or similar to input type \\
+		Aggregation & Summarize input & Scalar or tuple \\
+		Mutation & Modify input object in-place & Usually None \\
+		Accessor & Retrieve value or property & Any \\
+		Comprehension & Construct new iterable structure & list, dict, set, generator \\
+		Conversion & Change type or format & Target type (e.g., str, list, tensor) \\
+		\hline
+	\end{tabular}
+	\caption{Conceptual classification of Python functions}
+\end{table}
+
+\section{The Pattern of Sequence Padding and Length Normalization}
+
+In many computational tasks, particularly in deep learning and signal processing, it is necessary to normalize the length of input sequences. This normalization ensures that downstream models, which typically require fixed-size input, can process data uniformly in batches.
+
+A common and efficient strategy for length normalization is the \textbf{sequence padding pattern}, often implemented using list multiplication and in-place augmentation.
+
+\subsection*{Motivation}
+
+\begin{itemize}
+	\item Neural networks (e.g., RNNs, Transformers) expect inputs of the same length within a batch.
+	\item Algorithms such as dynamic programming rely on consistent dimensionality.
+	\item Hardware accelerators like GPUs and TPUs are optimized for fixed-size tensor operations.
+\end{itemize}
+
+To accommodate variable-length sequences, we use padding as a uniformity mechanism.
+
+\subsection*{General Pattern}
+
+The typical logic for padding a sequence to a desired length is:
+
+\begin{lstlisting}[language=Python, caption={Basic sequence padding pattern}]
+	if len(sequence) < desired_length:
+	padding = [pad_value] * (desired_length - len(sequence))
+	sequence += padding
+\end{lstlisting}
+
+\subsection*{Constituent Components}
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|p{3cm}|p{3cm}|p{7cm}|}
+		\hline
+		\textbf{Component} & \textbf{Role} & \textbf{Explanation} \\
+		\hline
+		\texttt{sequence} & Variable-length input & A list or tensor representing text, time series, or signal \\
+		\texttt{desired\_length} & Target fixed length & Required for batching or downstream model constraints \\
+		\texttt{pad\_value} & Padding element & Neutral value used to fill extra positions (e.g., 0 or \texttt{"<PAD>"}) \\
+		\texttt{len(sequence)} & Length check & Determines how much padding is needed \\
+		\texttt{[pad\_value] * n} & List multiplication & Efficiently creates repeated padding values \\
+		\texttt{+=} & In-place update & Extends the sequence without copying \\
+		\hline
+	\end{tabular}
+	\caption{Constituents of the sequence padding pattern}
+\end{table}
+
+\subsection*{Applications}
+
+\begin{itemize}
+	\item \textbf{Natural Language Processing:} Padding tokenized text to a fixed length for model input.
+	\item \textbf{Audio/Signal Processing:} Padding audio frames to fixed window sizes.
+	\item \textbf{Computer Vision:} Padding cropped regions or object masks for convolution.
+	\item \textbf{Time Series Forecasting:} Padding sequences to align time steps across samples.
+	\item \textbf{Dynamic Programming:} Initializing DP tables with base values.
+\end{itemize}
+
+\subsection*{Truncation: The Inverse Operation}
+
+If the sequence is longer than required, truncation is applied:
+
+\begin{lstlisting}[language=Python, caption={Truncating a sequence to desired length}]
+	if len(sequence) > desired_length:
+	sequence = sequence[:desired_length]
+\end{lstlisting}
+
+This is useful when only the initial segment is needed, especially in memory-constrained settings.
+
+\subsection*{Summary}
+
+The padding pattern is a reusable preprocessing strategy for converting variable-length inputs into fixed-length representations. It plays a foundational role in enabling batch computation and efficient model training. Its components are simple yet powerful, and it generalizes across a wide range of domains including NLP, vision, and time-series modeling.
+
+\section{Building Token Frequencies with \texttt{collections.Counter}}
+
+\paragraph{Motivation.}
+When processing text data, we often want to know how many times each word appears across a corpus. This frequency information is essential for building vocabularies, filtering rare words, or weighting features. Python’s \texttt{collections.Counter} provides a simple and efficient way to do this.
+
+\subsection{What is \texttt{Counter}?}
+
+\texttt{Counter} is a dictionary subclass from Python's \texttt{collections} module that is specifically designed to count hashable objects.
+
+\begin{lstlisting}[language=Python, caption={Basic Counter example}]
+	from collections import Counter
+	
+	words = ["apple", "banana", "apple", "orange", "banana", "apple"]
+	counter = Counter(words)
+	
+	print(counter)
+\end{lstlisting}
+
+\textbf{Output:}
+\begin{lstlisting}[language=Python]
+	Counter({'apple': 3, 'banana': 2, 'orange': 1})
+\end{lstlisting}
+
+\paragraph{Explanation.}
+Each unique element in the list is counted, and the result is stored as a dictionary-like object. The keys are the elements, and the values are the counts.
+
+\subsection{Using \texttt{Counter.update()}}
+
+You can also use \texttt{counter.update()} to add counts incrementally from another iterable.
+
+\begin{lstlisting}[language=Python, caption={Updating a Counter with more data}]
+	counter = Counter()
+	counter.update(["apple", "banana"])
+	counter.update(["apple", "orange"])
+	
+	print(counter)
+\end{lstlisting}
+
+\textbf{Output:}
+\begin{lstlisting}[language=Python]
+	Counter({'apple': 2, 'banana': 1, 'orange': 1})
+\end{lstlisting}
+
+\paragraph{Explanation.}
+The update function takes an iterable (like a list of words) and adds the counts of each element to the existing values in the counter.
+
+\subsection{Applying to Tokenized Text Data}
+
+In NLP, we often have a list of tokenized sentences — each sentence is a list of words. Our goal is to count how often each word appears in the full dataset.
+
+\begin{lstlisting}[language=Python, caption={Counting word frequencies across multiple sentences}]
+	tokenized_sentences = [
+	["i", "love", "this", "movie"],
+	["i", "do", "not", "love", "this", "movie"]
+	]
+	
+	counter = Counter()
+	for tokens in tokenized_sentences:
+	counter.update(tokens)
+	
+	print(counter)
+\end{lstlisting}
+
+\textbf{Output:}
+\begin{lstlisting}[language=Python]
+	Counter({'i': 2, 'love': 2, 'this': 2, 'movie': 2, 'do': 1, 'not': 1})
+\end{lstlisting}
+
+\paragraph{Explanation.}
+We initialize an empty counter and iterate through each list of tokens (i.e., each sentence). At each step, \texttt{update(tokens)} adds the count of every word in that sentence to the cumulative counter.
+
+\begin{itemize}
+	\item The token ``i'' appears in both sentences → count is 2.
+	\item ``love'', ``this'', and ``movie'' also appear twice.
+	\item ``do'' and ``not'' only appear in the second sentence → count is 1.
+\end{itemize}
+
+This is the standard method for computing word frequencies when building vocabularies from tokenized corpora.
+
+\section{Understanding \texttt{torch.zeros()} in PyTorch}
+
+The function \texttt{torch.zeros()} is a core tensor constructor in PyTorch that creates a tensor filled entirely with zeros. It is especially useful for initializing variables, defining placeholder tensors, or creating empty input templates.
+
+\subsection{Function Signature}
+\begin{itemize}
+	\item \texttt{torch.zeros(size, dtype=None, device=None, requires\_grad=False)}
+\end{itemize}
+
+\begin{itemize}
+	\item \textbf{\texttt{size}}: A tuple or list specifying the shape of the output tensor.
+	\item \textbf{\texttt{dtype}} (optional): The desired data type (e.g., \texttt{torch.float}, \texttt{torch.int}).
+	\item \textbf{\texttt{device}} (optional): The device on which to allocate the tensor, such as \texttt{'cpu'} or \texttt{'cuda'}.
+	\item \textbf{\texttt{requires\_grad}} (optional): If set to \texttt{True}, operations on the tensor will be tracked for automatic differentiation.
+\end{itemize}
+
+Let us see how to create a 1D Tensor of Zeros
+
+\begin{lstlisting}[language=Python, caption={Create a 1D tensor with 5 zeros}]
+	import torch
+	x = torch.zeros(5)
+	print(x)
+	# Output: tensor([0., 0., 0., 0., 0.])
+\end{lstlisting}
+
+Let us see  how to create a 2D Tensor of Zeros
+
+\begin{lstlisting}[language=Python, caption={Create a 2D tensor with shape (3, 4)}]
+	x = torch.zeros(3, 4)
+\end{lstlisting}
+
+Let us see how to specify Data Type and Device
+
+\begin{lstlisting}[language=Python, caption={Using dtype and device parameters}]
+	x = torch.zeros(2, 2, dtype=torch.int32, device='cpu')
+\end{lstlisting}
+
+Let us see how to enable Gradient Tracking
+
+\begin{lstlisting}[language=Python, caption={Tensor that supports autograd}]
+	x = torch.zeros(2, 2, requires_grad=True)
+\end{lstlisting}
+
+\paragraph{Common Use Cases}
+\begin{itemize}
+	\item Initializing model parameters such as weights and biases with zeros.
+	\item Creating blank input templates or intermediate buffers.
+	\item Padding inputs for sequence models or convolutional layers.
+	\item Masking elements in attention mechanisms or loss computations.
+\end{itemize}

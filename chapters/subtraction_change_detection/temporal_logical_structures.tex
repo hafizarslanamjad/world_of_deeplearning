@@ -1,0 +1,8 @@
+\section{Subtraction in Temporal and Logical Structures}
+In time-series data, systems are modeled as sequences of values indexed over time. The expression $x_t - x_{t-1}$ computes the change between successive time steps. This operation removes prior state information, isolating what is new. From a logical standpoint, subtraction here acts as a form of \emph{contrastive reasoning}: it eliminates what is already known (the past state) and retains only what has changed (the present deviation).
+
+This idea extends to structured symbolic representations such as graphs or knowledge embeddings. In logical anomaly detection frameworks like ComAD or SINBAD, each relation or node is encoded as a vector. Subtracting an expected relationship $f(B)$ from an observed one $f(A)$ gives:
+\[
+\Delta = f(A) - f(B)
+\]
+This vector $\Delta$ captures the semantic deviation. The subtraction removes commonalities and reveals contradiction or novelty. Thus, logical reasoning is achieved through algebraic difference.

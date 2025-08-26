@@ -1,0 +1,74 @@
+\subsection*{Step-by-Step Semantic Reasoning with Embeddings}
+
+\paragraph{1. What do we mean by \textquotedblleft semantic\textquotedblright?}
+Semantic refers to \emph{meaning}—not spelling, not structure, but what a word or concept represents in context.
+
+\textbf{Example:}
+\begin{itemize}
+	\item The words \texttt{apple} and \texttt{banana} are semantically close because both refer to fruits.
+	\item The words \texttt{apple} and \texttt{laptop} may be semantically related only because of the company Apple, not in the food sense.
+\end{itemize}
+So when we say two words are semantically similar, we mean: \emph{“they appear in similar contexts or serve similar roles in language.”}
+
+\paragraph{2. What is an embedding?}
+An \emph{embedding} is a vector representation of a concept (word, sentence, etc.) that captures its semantic context in numerical form.
+
+\textbf{Example:} In a model like Word2Vec:
+\begin{align*}
+	\texttt{cat} &= [0.5, -1.2, 0.3, \dots] \\\\
+	\texttt{dog} &= [0.52, -1.15, 0.29, \dots]
+\end{align*}
+
+\paragraph{3. What does the subtraction $A - B$ mean in this context?}
+When we compute $A - B$ for word vectors, we are finding the difference in meaning between two concepts.
+
+\textbf{Example:}
+\begin{align*}
+	A &= \texttt{king} = [1.0, 0.8, 0.5, \dots] \\\\
+	B &= \texttt{man} = [0.5, 0.3, 0.2, \dots] \\\\
+	A - B &= \texttt{king} - \texttt{man} = [0.5, 0.5, 0.3, \dots]
+\end{align*}
+This result represents what distinguishes a \texttt{king} from a \texttt{man}—ideas like royalty or status.
+
+Now consider:
+\[
+\texttt{woman} = [0.48, 0.32, 0.22, \dots]
+\]
+Then:
+\[
+\texttt{queen} \approx \texttt{king} - \texttt{man} + \texttt{woman}
+\]
+
+\paragraph{4. Where does this semantic encoding come from?}
+These patterns are learned from massive language corpora.
+
+\textbf{Example:}
+If the model frequently sees:
+\begin{itemize}
+	\item “The \texttt{king} rules the kingdom.”
+	\item “The \texttt{queen} rules the kingdom.”
+	\item “The \texttt{man} is tall.”
+	\item “The \texttt{woman} is tall.”
+\end{itemize}
+It learns that \texttt{king} and \texttt{queen} are used in parallel roles.
+
+\[
+\texttt{king} - \texttt{man} \approx \texttt{queen} - \texttt{woman}
+\]
+
+\paragraph{5. Summary Table}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|l|l|p{6cm}|}
+		\hline
+		\textbf{Concept} & \textbf{Meaning} & \textbf{Example} \\\hline
+		\textbf{Semantic} & The meaning of a word or concept & \texttt{cat} and \texttt{dog} are semantically similar \\\hline
+		\textbf{Embedding} & A numeric vector representing meaning & \texttt{cat} = $[0.5, -1.2, 0.3, \dots]$ \\\hline
+		\textbf{Subtraction $A - B$} & Captures how $A$ differs from $B$ & \texttt{king} $-$ \texttt{man} $\approx$ ``royalty'' \\\hline
+		\textbf{Semantic shift} & The difference in context or role & \texttt{woman} $+$ (\texttt{king} $-$ \texttt{man}) $\approx$ \texttt{queen} \\\hline
+		\textbf{Encoding source} & Learned from language use & Learned by observing how words are used in similar roles \\\hline
+	\end{tabular}
+	\caption{Summary of semantic vector reasoning}
+\end{table}
+

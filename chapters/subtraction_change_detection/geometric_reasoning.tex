@@ -1,0 +1,19 @@
+\section{Geometric Reasoning and Directionality of Change}
+In vector spaces, subtraction is geometrically interpreted as a directional vector from point $B$ to point $A$. That is:
+\[
+A - B = \vec{v} \Rightarrow \text{a vector pointing from } B \text{ to } A
+\]
+
+The direction of $\vec{v}$ reveals \emph{where} the change is occurring, and its magnitude $\|\vec{v}\|$ quantifies \emph{how much} change has occurred. This geometric reasoning is fundamental to modern machine learning systems, especially those relying on embedding spaces. For example, in word embeddings, the analogy:
+\[
+\text{king} - \text{man} + \text{woman} \approx \text{queen}
+\]
+works because subtraction captures the relational transformation: the difference between "king" and "man" is transferred to "woman".
+
+Subtraction thus enables two forms of reasoning:
+\begin{itemize}
+	\item \textbf{Directional reasoning:} Determining how one state shifts toward another.
+	\item \textbf{Contrastive reasoning:} Isolating what is different by removing what is shared.
+\end{itemize}
+
+This makes it a powerful tool in tasks requiring spatial reasoning, semantic change detection, and logical contradiction modeling.

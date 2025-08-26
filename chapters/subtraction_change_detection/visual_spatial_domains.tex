@@ -1,0 +1,12 @@
+\section{Subtraction in Visual and Spatial Domains}
+In image processing, edges—points of abrupt intensity change—can be detected using filters that apply subtraction across spatially neighboring pixels. A common example is the Sobel filter used for horizontal edge detection:
+\[
+K = \begin{bmatrix}
+	-1 & 0 & 1 \\
+	-2 & 0 & 2 \\
+	-1 & 0 & 1 \\
+\end{bmatrix}
+\]
+This kernel applies the expression $(\text{right intensity}) - (\text{left intensity})$, highlighting areas with strong horizontal contrast. The center row is weighted more because real images often carry more structural information in the center.
+
+Here, subtraction works locally but serves a global purpose: it marks boundaries and discontinuities. The logic is again contrastive—only differences survive the operation.
