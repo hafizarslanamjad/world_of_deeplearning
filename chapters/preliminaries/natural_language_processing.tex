@@ -1,0 +1,211 @@
+\section{\texttt{vectorizer.fit\_transform}}
+
+In machine learning (especially in Natural Language Processing), we often use 
+\textbf{vectorizers} from libraries like \textbf{scikit-learn}, such as 
+\texttt{CountVectorizer} and \texttt{TfidfVectorizer}. 
+These convert text (words, sentences, documents) into \textbf{numerical vectors} 
+that models can understand. 
+
+When you call \texttt{fit}, the vectorizer learns the vocabulary from your training data:
+
+\begin{lstlisting}[caption=Learning the vocabulary with \texttt{fit}]
+	from sklearn.feature_extraction.text import CountVectorizer
+	
+	vectorizer = CountVectorizer()
+	vectorizer.fit(["I Love NLP", "I Love Python"])
+\end{lstlisting}
+
+This produces the learned dictionary (vocabulary):
+
+\begin{lstlisting}[caption=Vocabulary learned by \texttt{fit}]
+	{'i': 0, 'love': 1, 'nlp': 2, 'python': 3}
+\end{lstlisting}
+
+So, \texttt{fit} = \textbf{learn the dictionary of words}.  
+After the vocabulary is learned, \texttt{transform} takes your text and 
+\textbf{converts it into vectors} using that vocabulary:
+
+\begin{lstlisting}[caption=Transforming a new document]
+	vectorizer.transform(["I Love Python"])
+\end{lstlisting}
+
+This produces the numerical vector:
+
+\begin{lstlisting}[caption=Vector representation]
+	[[1, 1, 0, 1]]
+\end{lstlisting}
+
+Here, \texttt{"i"}=1, \texttt{"love"}=1, \texttt{"nlp"}=0, \texttt{"python"}=1.  
+So, \texttt{transform} = \textbf{apply the dictionary to create numerical vectors}.  
+
+The method \texttt{fit\_transform} is simply a shortcut: first it 
+\textbf{fits} (learns the vocabulary), then it \textbf{transforms} (converts the dataset 
+into vectors). For example:
+
+\begin{lstlisting}[caption=Using fit\_transform directly]
+	X = vectorizer.fit_transform(["I Love NLP", "I Love Python"])
+\end{lstlisting}
+
+The result is a document--term matrix:
+
+\begin{lstlisting}[caption=Matrix representation of the corpus]
+	[[1, 1, 1, 0], 
+	[1, 1, 0, 1]]
+\end{lstlisting}
+
+Row 1 corresponds to ``I Love NLP'' $\rightarrow$ (\texttt{"i"}=1, \texttt{"love"}=1, \texttt{"nlp"}=1, \texttt{"python"}=0).  
+Row 2 corresponds to ``I Love Python'' $\rightarrow$ (\texttt{"i"}=1, \texttt{"love"}=1, \texttt{"nlp"}=0, \texttt{"python"}=1).
+
+
+\subsection{Mathematical Representation}
+Suppose our corpus (collection of documents) is 
+$D = \{\, d_{1} = \texttt{"I love NLP"}, \; d_{2} = \texttt{"I love Python"} \,\}$. 
+The vocabulary extracted is 
+$V = \{\texttt{"i"}, \texttt{"love"}, \texttt{"nlp"}, \texttt{"python"}\}$. 
+Here, $V$ has size $4$. Each word gets an index: 
+$\texttt{"i"} \rightarrow 0$, 
+$\texttt{"love"} \rightarrow 1$, 
+$\texttt{"nlp"} \rightarrow 2$, 
+$\texttt{"python"} \rightarrow 3$. We represent the corpus as a matrix $X \in \mathbb{R}^{m \times n}$, where 
+$m$ is the number of documents (2 here), $n$ is the size of the vocabulary (4 here), 
+and $X_{ij}$ is the number of times word $j$ appears in document $i$. So:
+\[
+X =
+\begin{bmatrix}
+	1 & 1 & 1 & 0 \\
+	1 & 1 & 0 & 1
+\end{bmatrix}
+\]
+
+Row 1 = ``I love NLP'' $\;\rightarrow\;$ (``i''=1, ``love''=1, ``nlp''=1, ``python''=0).  
+Row 2 = ``I love Python'' $\;\rightarrow\;$ (``i''=1, ``love''=1, ``nlp''=0, ``python''=1). The matrix $X$ is called the \emph{document--term matrix}. Each row is a document, each column is a vocabulary word, 
+and each entry $X_{ij}$ shows how many times word $j$ occurs in document $i$. So the whole point of \texttt{fit\_transform} is:
+So the whole point of \texttt{fit\_transform} is 
+$\texttt{vectorizer.fit\_transform}(D) \;\longrightarrow\; X$. 
+That is, $\text{fit} \;\longrightarrow\; \text{build } V \text{ (the vocabulary)}$ 
+and $\text{transform} \;\longrightarrow\; \text{build } X \text{ (the matrix representation)}$. Now that we have $X$, we can feed it into ML models such as Logistic Regression, Naive Bayes, or Neural Networks, 
+because $X$ is purely numeric. Our document--term matrix $X$ (from \texttt{CountVectorizer.fit\_transform}) was:
+
+\[
+X =
+\begin{bmatrix}
+	1 & 1 & 1 & 0 \\
+	1 & 1 & 0 & 1
+\end{bmatrix}
+\]
+
+with vocabulary $V = \{\texttt{"i"}, \texttt{"love"}, \texttt{"nlp"}, \texttt{"python"}\}$. But Bag-of-Words has a weakness: common words like \texttt{"i"} and \texttt{"love"} get the same weight as more meaningful words like \texttt{"nlp"} or \texttt{"python"}.  
+So we need TF--IDF.
+
+\section{Term Frequency (TF)}
+
+The term frequency of a word $t$ in a document $d$ is defined as
+
+\[
+\mathrm{TF}(t,d) = \frac{\text{count of $t$ in $d$}}{\text{total words in $d$}}.
+\]
+In words: how often the word appears in the document, normalized by document length. The inverse document frequency of a word $t$ across the corpus $D$ is defined as
+\[
+\mathrm{IDF}(t,D) = \log \frac{N}{1 + \mathrm{df}(t)},
+\]
+where $N$ is the total number of documents and $\mathrm{df}(t)$ is the number of documents containing the word $t$. The ``+1'' avoids division by zero.  The intuition is that rare words (low $\mathrm{df}(t)$) get higher weight; common words get lower weight. The final weight is given by
+\[
+\mathrm{TFIDF}(t,d,D) = \mathrm{TF}(t,d) \times \mathrm{IDF}(t,D).
+\]
+In words: high if the word is frequent in the document and rare across other documents,  
+low if the word is common everywhere. So in our example the corpus is
+\[
+d_{1} : \texttt{"I love NLP"} \qquad
+d_{2} : \texttt{"I love Python"}
+\]
+with $N = 2$ documents total.
+\begin{itemize}
+	\item \texttt{"i"}: appears in both $\rightarrow \mathrm{df}=2$
+	\item \texttt{"love"}: appears in both $\rightarrow \mathrm{df}=2$
+	\item \texttt{"nlp"}: appears only in $d_1 \rightarrow \mathrm{df}=1$
+	\item \texttt{"python"}: appears only in $d_2 \rightarrow \mathrm{df}=1$
+\end{itemize}
+Let us compute IDF
+\[
+\mathrm{IDF}(t) = \log \frac{2}{1 + \mathrm{df}(t)}.
+\]
+So:
+\[
+\begin{aligned}
+	\mathrm{idf}(\texttt{"i"}) &= \log \tfrac{2}{3} \approx -0.405, \\
+	\mathrm{idf}(\texttt{"love"}) &= \log \tfrac{2}{3} \approx -0.405, \\
+	\mathrm{idf}(\texttt{"nlp"}) &= \log \tfrac{2}{2} = 0, \\
+	\mathrm{idf}(\texttt{"python"}) &= \log \tfrac{2}{2} = 0.
+\end{aligned}
+\]
+(Note: \texttt{scikit-learn} smooths IDF differently, so in practice you see small positive values instead of negatives or zeros.) Each document has 3 words.
+\[
+\begin{aligned}
+	d_1 &: \mathrm{tf}(\texttt{"i"})=1/3, \quad 
+	\mathrm{tf}(\texttt{"love"})=1/3, \quad 
+	\mathrm{tf}(\texttt{"nlp"})=1/3, \quad 
+	\mathrm{tf}(\texttt{"python"})=0, \\
+	d_2 &: \mathrm{tf}(\texttt{"i"})=1/3, \quad 
+	\mathrm{tf}(\texttt{"love"})=1/3, \quad 
+	\mathrm{tf}(\texttt{"nlp"})=0, \quad 
+	\mathrm{tf}(\texttt{"python"})=1/3.
+\end{aligned}
+\]
+For $d_1$:
+\[
+\big[ (1/3)(-0.405), \; (1/3)(-0.405), \; (1/3)(0), \; 0 \big].
+\]
+For $d_2$:
+\[
+\big[ (1/3)(-0.405), \; (1/3)(-0.405), \; 0, \; (1/3)(0) \big].
+\]
+So rare words (\texttt{"nlp"}, \texttt{"python"}) get boosted, while common ones (\texttt{"i"}, \texttt{"love"}) get dampened.
+\begin{itemize}
+	\item TF tells how important a word is inside a document.
+	\item IDF tells how unique that word is across documents.
+	\item TF--IDF balances both: keep words that define a document, ignore those that appear everywhere.
+\end{itemize}
+In short:
+\[
+\texttt{TfidfVectorizer.fit\_transform(corpus)} 
+= \text{ learn vocabulary + compute weighted document--term matrix}.
+\]
+
+\section{Why the Logarithm in IDF?}
+
+\[
+\mathrm{IDF}(t,D) = \frac{N}{1 + \mathrm{df}(t)}.
+\]
+Large $df(t) \Rightarrow$ small weight. Small $df(t) \Rightarrow$ large weight. But without log, values explode (rare words can dominate). Example with $N=1000$:
+\[
+\begin{aligned}
+	\mathrm{df}=1 &: 1000/2 = 500, \\
+	\mathrm{df}=10 &: 1000/11 \approx 90.9, \\
+	\mathrm{df}=900 &: 1000/901 \approx 1.1.
+\end{aligned}
+\]
+Scale difference is extreme. With log:
+\[
+\mathrm{IDF}(t,D) = \log \frac{N}{1+\mathrm{df}(t)}.
+\]
+Example with $N=1000$:
+\[
+\begin{aligned}
+	\mathrm{df}=1 &: \log(500) \approx 6.2, \\
+	\mathrm{df}=10 &: \log(90.9) \approx 4.5, \\
+	\mathrm{df}=900 &: \log(1.1) \approx 0.095.
+\end{aligned}
+\]
+Now values are compressed to $[0,6]$ range, smoother and balanced.
+\begin{itemize}
+	\item Log models diminishing returns: the more documents contain a word, the less informative it becomes.
+	\item Log connects to information theory: $-\log P(t)$ is the ``self-information'' of word $t$.
+	\item Rare words carry more information; common words less.
+\end{itemize}
+We need the log in IDF to:
+\begin{itemize}
+	\item Dampen large values so rare words do not overwhelm the model.
+	\item Maintain smooth differences between rarity levels.
+	\item Model diminishing returns in informativeness.
+	\item Connect to information-theoretic principles.
+\end{itemize}

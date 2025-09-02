@@ -1,12 +1,14 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Timeline of the conceptual development of images as vectors}}{17}{}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Python and PyTorch function cheat sheet with input and output types}}{38}{}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces Summary of common Python object categories}}{38}{}%
-\contentsline {table}{\numberline {4.3}{\ignorespaces Conceptual classification of Python functions}}{42}{}%
-\contentsline {table}{\numberline {4.4}{\ignorespaces Constituents of the sequence padding pattern}}{43}{}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Timeline of the conceptual development of images as vectors}}{24}{}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1}{\ignorespaces Summary of semantic vector reasoning}}{57}{}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Python and PyTorch function cheat sheet with input and output types}}{47}{}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Summary of common Python object categories}}{47}{}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Conceptual classification of Python functions}}{51}{}%
+\contentsline {table}{\numberline {6.4}{\ignorespaces Constituents of the sequence padding pattern}}{52}{}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {8.1}{\ignorespaces Summary of semantic vector reasoning}}{66}{}%
